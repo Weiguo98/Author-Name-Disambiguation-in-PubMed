@@ -1,0 +1,12 @@
+pyjarowinkler
+xlsxwriter
+xlrd==1.2.0
+bs4
+nltk
+openpyxl
+numpy
+flair
+gensim
+pandas
+sklearn
+matplotlib

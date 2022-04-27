@@ -740,7 +740,7 @@ bert_embedding = BertEmbeddings('bert-base-uncased')
 model = [bert_embedding]
 
 def cosine_embedding(sentence1, sentence2, model):
-    embeddings = DocumentPoolEmbeddings(model, mode='mean')
+    embeddings = DocumentPoolEmbeddings(model)
     s1 = Sentence(sentence1)
     s2 = Sentence(sentence2)
     e1 = embeddings.embed(s1)
