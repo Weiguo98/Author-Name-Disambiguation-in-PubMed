@@ -640,8 +640,10 @@ def affiliation_similarity(author,similarity):
     #that combines a string-based distance with the TFIDF dis-
     #tance.
     softtfidf = aff_softtfidf(author[0][7],author[1][7],author[0][8],author[1][8])
-    
-    dept_jac, org_jac, loc_jac = aff_ner_jac(author[0][16],author[1][16],author[0][17],author[1][17],author[0][18],author[1][18])
+    try: 
+        dept_jac, org_jac, loc_jac = aff_ner_jac(author[0][16],author[1][16],author[0][17],author[1][17],author[0][18],author[1][18])
+    except IndexError:
+        dept_jac, org_jac, loc_jac = 0,0,0
     similarity.append(email)
     similarity.append(jac)
     similarity.append(tfidf1)
@@ -790,8 +792,12 @@ def main(authorname):
                 author.append(data[j])
                 
                 similarity = []
-                similarity.append(str(data[i][1] + " " + data[i][4] + "_" + data[i][15]))
-                similarity.append(str(data[j][1] + " " + data[j][4] + "_" + data[j][15]))
+                try:
+                    similarity.append(str(data[i][1] + " " + data[i][4] + "_" + data[i][15]))
+                    similarity.append(str(data[j][1] + " " + data[j][4] + "_" + data[j][15]))
+                except IndexError as e:
+                    similarity.append(str(data[i][1] + " " + data[i][4]))
+                    similarity.append(str(data[j][1] + " " + data[j][4]))
                 
                 #author similarity
                 author_similarity(author,similarity)
@@ -850,9 +856,9 @@ if __name__ == "__main__":
         print(author, "author_features/"+authorlist[author])
         rb = open_workbook("author_features/"+authorlist[author])
         global sheet
-        sheet = rb.sheet_by_name('Sheet')
+        sheet = rb.sheet_by_name('data')
         global data
-        data = [[sheet.cell_value(r, c) for c in range(sheet.ncols)] for r in range(sheet.nrows)]
+        data = [[sheet.cell_value(r, c) for c in range(sheet.ncols)] for r in range(0,sheet.nrows)]
         
         for i in range(0,len(data)):
             for j in range(0,len(data[0])):

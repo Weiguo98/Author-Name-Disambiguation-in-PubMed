@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score 
 from sklearn.metrics import confusion_matrix
+from joblib import dump, load
 import matplotlib.pyplot as plt
 import json
 import os
@@ -12,7 +13,7 @@ import os
 with open("config.json") as json_file:
 	parsed_json = json.load(json_file)
 
-OUTPUT_PATH=''	
+OUTPUT_PATH='Train_dataset.csv'	
 for files in parsed_json:
 	if(files['python_file']==os.path.realpath(__file__).split("\\")[-1]):
 		OUTPUT_PATH = files['xlsxfile']
@@ -106,7 +107,7 @@ def main():
     
     predictions = trained_model.predict(validation_x)
 
-    
+    dump(trained_model,'saved_model.joblib')
     #ploting features
     importances = trained_model.feature_importances_
     indices = np.argsort(importances)
