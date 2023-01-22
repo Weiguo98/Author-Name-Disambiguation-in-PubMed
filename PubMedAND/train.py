@@ -10,6 +10,13 @@ import matplotlib.pyplot as plt
 import json
 import os
 
+import logging
+
+import mlflow
+
+logging.basicConfig(level=logging.WARN)
+logger = logging.getLogger(__name__)
+
 with open("config.json") as json_file:
 	parsed_json = json.load(json_file)
 
@@ -94,6 +101,7 @@ def main():
         else:
             predicted.append(1)
     
+    mlflow.log_param("0.7 threshold validation accuracy",accuracy_score(validation_y, predicted))
     print("0.7 threshold validation accuracy ", accuracy_score(validation_y, predicted))
     
     predicted = []
@@ -102,12 +110,12 @@ def main():
             predicted.append(0)
         else:
             predicted.append(1)
-    
+    mlflow.log_param("0.8 threshold validation accuracy",accuracy_score(validation_y, predicted))
     print("0.8 threshold validation accuracy ", accuracy_score(validation_y, predicted))
     
     predictions = trained_model.predict(validation_x)
 
-    dump(trained_model,'saved_model.joblib')
+    # dump(trained_model,'saved_model.joblib')
     #ploting features
     importances = trained_model.feature_importances_
     indices = np.argsort(importances)
@@ -128,9 +136,12 @@ def main():
     plt.barh(range(10), impwidth, color='#5485C0', align='center')
     plt.yticks(range(0,len(widthind)), widthind)
     plt.xlabel('Relative Importance')
-    plt.show()
+    # plt.show()
     
+    mlflow.log_figure(plt.figure(1),"feature_importance.png")
     cm = confusion_matrix(validation_y, predictions)
+
+
     # means all predicted and target value matched then Confusion Matrix size will be 1 X 1 
     if(cm.shape[0]==1):
         TP = len(validation_y)
@@ -160,7 +171,9 @@ def main():
     print('Validation Recall ', recall)
     print('Validation F1 - score ', f1score )
     print ("Validation Confusion matrix ", cm)
-    
+
+    mlflow.log_metric("Train_accuracy",0.8,1)
+    mlflow.log_metric("Train_accuracy",0.9,2)
     #for testing
     print("TESTING RESULTS")
     threshold_pred_values = trained_model.predict_proba(test_x)
@@ -261,6 +274,8 @@ def main():
     leg.get_frame().set_edgecolor('k') 
     plt.xlabel('Threshold') 
     plt.ylabel('Performance')
+
+    mlflow.sklearn.log_model(trained_model, "model")
     
     
 if __name__ == "__main__":

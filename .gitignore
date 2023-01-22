@@ -1,3 +1,5 @@
-PubMedAND/author_features_backup/*
-PubMedAND/Similarity_profile_new/*
-PubMedAND/author_features_1/*
+# PubMedAND/author_features_backup/*
+# PubMedAND/Similarity_profile_new/*
+# PubMedAND/author_features_1/*
+mlruns/*
+PubMedAND/mlruns/*
